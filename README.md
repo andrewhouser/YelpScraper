@@ -15,6 +15,7 @@ There are a number of planned improvements to this project, including:
 - Export (CSV, initially)
 - Additional filter options ( filter by reporter, rating, etc)
 - Additional data returned from the yelpscraper service
+- Add AngularJS version
 - etc
 
 ## Build Requirements
