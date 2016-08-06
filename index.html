@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Yelp Scraper</title>
+
+	<link rel="stylesheet" href="res/css/style.min.css">
+</head>
+<body>
+	<div class="flex-container flex-columns" id="wrapper">
+
+		<div class="searchbar flex-container" data-bind="css: { 'searchbar-min': isFirstLoad() || reviews().length > 0} ">
+			<label for="yelpURL">Enter a Yelp review page URL</label>
+			<input type="text" name="yelpURL" id="yelpURL" placeholder="Yelp page URL" autocomplete="off" data-bind="textInput: searchURL, enterkey: search, click: selectAll">
+			<input type="submit" value="Go!" disabled="disabled" data-bind="click: search, attr: { 'disabled': !searchButtonEnabled() }">
+		</div>
+
+		<div class="first-loader" data-bind="css: { 'first-loader-vis' : isFirstLoad() }">
+			<div class="loader">Loading</div>
+		</div>
+
+		<div class="results-container" data-bind="visible: reviews().length > 0, css: { 'results-container-vis': reviews().length > 0 }">
+			<div class="range-container flex-container">
+
+				<div class="loader mini-loader" data-bind="visible: isLoadingPages()">Loading</div>
+				<div class="range-date range-date-end" data-bind="text: endDate()"></div>
+				<div id="yelprng"></div>
+				<div class="range-date rage-date-start" data-bind="text: startDate()"></div>
+				<div class="average-rating flex-container"> 
+					<label class="inline">Average rating</label>
+					<div class="review-average" data-bind="text: avgReview"></div>
+				</div>
+			</div>
+			<table border="0" cellpadding="0" cellspacing="0">
+				<thead>
+					<tr>
+						<th>&nbsp;</th>
+						<th>Date</th>
+						<th>Rating</th>
+						<th>Review</th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: reviews">
+					<tr valign="top">
+						<td data-bind="text: ( $index() + 1 ) + '.'"></td>
+						<td data-bind="text: $root.formatDate( date )"></td>
+						<td data-bind="text: rating"></td>
+						<td width="100%" data-bind="html: review"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<form action="yelpexport.php" method="post" style="display: none">
+			<textarea name="exportdata" id="exportdata" data-bind="value: exportdata"></textarea>
+			<input type="submit" name="submitexport" id="submitexport" value="export">
+		</form>
+
+	</div>
+
+	<div id="yelpapp"></div>
+	<script src="res/js/yelp.knockout.min.js"></script>
+
+
+	<!--<script src="res/js/src/react/react.js"></script>
+	<script src="res/js/src/react/react-dom.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.16/browser.js"></script>
+	<script type="text/babel" src="res/js/yelp.react.js"></script>-->
+</body>
+</html>
