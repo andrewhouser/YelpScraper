@@ -1,7 +1,47 @@
 var SearchResults = React.createClass({
+	dateFormat: 'MMM D, YYYY',
+	_filterEnd: null,
+	_filterStart: null,
+	reviews: [],
+
+	componentDidUpdate: function () {
+		this.reviews = this.props.reviews;
+	},
+
+	averageRating: function () {
+		var aRatings = 0,
+		    i = 0,
+		    len = this.reviews.length;
+
+		for ( i = 0; i < len; i++ ) {
+			aRatings += parseInt( this.reviews[i].rating );
+		}
+
+		return (aRatings == 0) ? '' : (aRatings / len).toFixed(1);
+	},
+
+	filterEnd: function () {
+		if ( this._filterEnd != null && this.reviews.length > 0 ) {
+			return this.reviews[ this._filterEnd ].date;
+		}
+		return null;
+	},
+
+	filterStart: function () {
+		if ( this._filterStart != null && this.reviews.length > 0 ) {
+			return this.reviews[ this._filterStart ].date;
+		}
+		return null;
+	},
+
+	momentDate: function ( sDate ) {
+		var mDate = moment( sDate );
+		return mDate.format( this.dateFormat );
+	},
+
 	render: function () {
 		var classNames = ['results-container'],
-		    rows  = this.props.reviews.map( function ( val, i, arr ) {
+		    rows  = this.reviews.map( function ( val, i, arr ) {
 		    	return (
 		    		<tr>
 						<td>{ ( i + 1 ) }.</td>
@@ -12,26 +52,18 @@ var SearchResults = React.createClass({
 		    	);
 		    });
 
-		if ( this.props.reviews.length > 0 ) {
+		if ( this.reviews.length > 0 ) {
 			classNames.push( 'results-container-vis' );
 		}
 
 		return (
 			<div className={ classNames.join(' ') }>
-
-				// <div className="range-container flex-container">
-
-				// 	<div className="loader mini-loader" data-bind="visible: isLoadingPages()">Loading</div>
-				// 	<div className="range-date range-date-end" data-bind="text: endDate()"></div>
-				// 	<div id="yelprng"></div>
-				// 	<div className="range-date rage-date-start" data-bind="text: startDate()"></div>
-				// 	<div className="average-rating flex-container"> 
-				// 		<label className="inline">Average rating</label>
-				// 		<div className="review-average" data-bind="text: avgReview"></div>
-				// 	</div>
-				// </div>
-
-				<table border="0" cellpadding="0" cellspacing="0">
+				<SearchRange
+					averageRating={ this.averageRating() }
+					endDate={ this.filterEnd() }
+					startDate={ this.filterStart }
+					steps={ this.reviews.length || 0 } />
+				<table border="0" cellPadding="0" cellSpacing="0">
 					<thead>
 						<tr>
 							<th></th>
@@ -40,7 +72,7 @@ var SearchResults = React.createClass({
 							<th>Review</th>
 						</tr>
 					</thead>
-					<tbody data-bind="foreach: reviews">
+					<tbody>
 						{ rows }
 					</tbody>
 				</table>

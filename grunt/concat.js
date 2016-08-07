@@ -3,8 +3,11 @@ module.exports = {
 		separator: ';',
 	},
 	css: {
-		src: ['res/css/src/style.post.css', 'res/js/src/lib/jquery-range/jquery-ui.min.css'],
-		dest: 'res/css/style.min.css'
+		options: {
+			separator: '',
+		},
+		src: ['res/js/src/lib/jquery-range/jquery-ui.min.css', 'res/css/src/loader.css', 'res/css/src/style.post.css'],
+		dest: 'res/css/style.css'
 	},
 	knockout: {
 		src: ['res/js/lib.js', 'res/js/src/lib/knockout-3.4.0.js', 'res/js/src/knockout/ViewModel.js', 'res/js/src/knockout/main.js'],

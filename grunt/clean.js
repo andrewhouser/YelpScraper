@@ -1,4 +1,8 @@
 module.exports = {
-  css: ['res/css/src/*.post.css'],
-  js: ['res/js/*.js', '!res/js/*.min.js', 'react/res/js/src/compiled/']
+	options: {
+		force: true
+	},
+	css: ['res/css/src/*.post.css', 'res/css/*.css', '!res/css/*.min.css'],
+	knockout: ['res/js/*.js', '!res/js/*.min.js'],
+	react: ['react/res/js/src/compiled/', 'react/res/js/*.js', '!react/res/js/*.min.js']
 };

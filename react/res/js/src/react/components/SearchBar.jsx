@@ -5,13 +5,15 @@ var SearchBar = React.createClass({
 	},
 
 	render: function () {
-		// if is loading for the first time
-		// add classname 'searchbar-min'
+		var classNames = ['searchbar', 'flex-container'],
+		    disabled = ( this.props.searchURL == '' ) ? true : false;
 
-		var disabled = ( this.props.searchURL == '' ) ? true : false; 
+		if ( this.props.minimized ) {
+			classNames.push('searchbar-min');
+		}
 		
 		return (
-			<div className="searchbar flex-container">
+			<div className={ classNames.join(' ') }>
 				<LabeledInput
 					ref="labeledInput"
 					name="yelpUrl"

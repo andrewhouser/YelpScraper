@@ -1,5 +1,6 @@
 html,
-body {
+body,
+#yelpapp {
 	background: #fff;
 	height: 100%;
 	margin: 0;

@@ -16,10 +16,10 @@ module.exports = function(grunt) {
 			'concat:library',
 			'concat:knockout',
 			'uglify:knockout',
-			'clean:js'
+			'clean:knockout'
 	]);
 
-	grunt.registerTask( 'css', ['postcss', 'concat:css', 'clean:css'] );
+	grunt.registerTask( 'css', ['postcss', 'concat:css', 'cssmin', 'clean:css'] );
 
 	grunt.registerTask( 'react', [
 			'css',
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
 			'babel',
 			'concat:react',
 			'uglify:react',
-			'clean:js'
+			'clean:react'
 	]);
 
 	// Default task(s).

@@ -1,6 +1,4 @@
 var YelpApp = React.createClass({
-	dateFormat: 'MMM D, YYYY',
-
 	getInitialState: function () {
 		return {
 			filterEnd: null,
@@ -15,11 +13,6 @@ var YelpApp = React.createClass({
 
 	componentDidMount: function(){
 		ReactDOM.findDOMNode( this.refs.searchBar.refs.labeledInput.refs.inputField ).focus();
-	},
-
-	formatDate: function ( sDate ) {
-		var mDate = moment( sDate );
-		return mDate.format( this.dateFormat );
 	},
 
 	getYelpReviews: function () {
@@ -50,6 +43,11 @@ var YelpApp = React.createClass({
 		return true;
 	},
 
+	minifySearchBar: function () {
+		var rLen = this.state.reviews.length;
+		return ( ( this.state.searching == true && rLen == 0 ) || rLen > 0 );
+	},
+
 	processReviews: function ( data ) {
 		var i = 0,
 		    newStart = null,
@@ -77,7 +75,6 @@ var YelpApp = React.createClass({
 			this.getYelpReviews();
 		}
 		else {
-			console.log( this.state.reviews.length );
 			this.setState( { searching: false } );
 		}
 	},
@@ -87,6 +84,7 @@ var YelpApp = React.createClass({
 			<div className="flex-container flex-columns" id="wrapper">
 				<SearchBar
 					ref="searchBar"
+					minimized={ this.minifySearchBar() }
 					onInputChanged={ this.handleInputChanged }
 					onKeyDown={ this.handleInputKey }
 					searchURL={ this.state.searchURL }
@@ -94,7 +92,6 @@ var YelpApp = React.createClass({
 				<LoadSpinner loading={ this.state.isFirstLoad } />
 				<SearchResults
 					ref="searchResults"
-					formatDate={ this.formatDate }
 					reviews={ this.state.reviews } />
 			</div>
 		);
