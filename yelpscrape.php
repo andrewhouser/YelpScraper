@@ -11,13 +11,13 @@ $pageLinks = Array();
 function doLog ( $str ) {
 	$fh = fopen("log.txt", "a+");
 	fwrite( $fh, $str ."\n");
-	fclose( $fh );	
+	fclose( $fh );
 }
 
 function formatLocString ( $str ) {
 	if ( $str ) {
-		list( $url, $query ) = explode( "?", $str );
-		
+		list( $url, $query ) = explode( "?", "$str" );
+
 		parse_str( $query, $arr );
 
 		$arr["sort_by"] = "date_desc";
@@ -58,13 +58,15 @@ function get_data( $url ) {
     $header  = curl_getinfo( $ch,CURLINFO_EFFECTIVE_URL );
     curl_close( $ch );
 
-    $header['errno']   = $err;
-    $header['errmsg']  = $errmsg;
+    //$header['errno']   = $err;
+    //$header['errmsg']  = $errmsg;
 
     //change errmsg here to errno
     if ($errmsg) {
         echo "CURL:".$errmsg."<BR>";
     }
+
+    // echo $content;
     return $content;
 }
 
@@ -80,20 +82,22 @@ function getPageRatings( $page ) {
 	// $html = file_get_html( $page );
 	$html = new simple_html_dom();
 
+	$data = get_data( $page );
+
 	// Load HTML from a string
-	$html->load( get_data( $page ) );
+	$html->load( $data );
 
 	// Get all the star ratings
-	foreach($html->find('.review-wrapper meta[itemprop=ratingValue]') as $element) {
-		$ratings[] = $element->content;
+	foreach($html->find('.review-content img.offscreen') as $element) {
+		$ratings[] = preg_replace("/[^0-9\.]/","",$element->alt);
 	}
 
 	// Get all the dates
-	foreach($html->find('.review-wrapper meta[itemprop=datePublished]') as $element) {
-		$dates[] = $element->content;
+	foreach($html->find('.review-content span.rating-qualifier') as $element) {
+		$dates[] = trim( strip_tags_content( $element->innertext ) );
 	}
 
-	foreach($html->find('.review-wrapper p[itemprop=description]') as $element) {
+	foreach($html->find('.review-content > p') as $element) {
 		$reviews[] = $element->plaintext;
 	}
 
@@ -113,6 +117,25 @@ function getPageRatings( $page ) {
 
 		$reviewObjs[] = $r;
 	}
+}
+
+
+function strip_tags_content($text, $tags = '', $invert = FALSE) {
+	preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', trim($tags), $tags);
+	$tags = array_unique($tags[1]);
+
+	if(is_array($tags) AND count($tags) > 0) {
+	if($invert == FALSE) {
+	  return preg_replace('@<(?!(?:'. implode('|', $tags) .')\b)(\w+)\b.*?>.*?</\1>@si', '', $text);
+	}
+	else {
+	  return preg_replace('@<('. implode('|', $tags) .')\b.*?>.*?</\1>@si', '', $text);
+	}
+	}
+	elseif($invert == FALSE) {
+	return preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text);
+	}
+	return $text;
 }
 
 if ( $loc ) {
